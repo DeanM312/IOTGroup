@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Home Controller</title>
+</head>
+<body>
+    <h1>Smart Home Controller</h1>
+    <hr>
+    <h2>Commands</h2>
+    
+    <form method="post">
+        <label for="value">Fan:</label>
+        
+        <input type="radio" id="off" name="fanstate" value="OFF">
+	<label for="off">Off</label>
+	<input type="radio" id="on" name="fanstate" value="ON">
+	<label for="on">On</label>
+	<br>
+	<label for="door">Door:</label>
+	<input type="radio" id="close" name="door" value="close">
+	<input type="radio" id="open" name="door" value="open">
+	<br>
+	<br>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
