@@ -18,11 +18,16 @@
 			<br>
 			<label for="door">Door:</label>
 			<input type="radio" id="open" name="door" value="open">
+			<label for="open">Open</label>
 			<input type="radio" id="close" name="door" value="close">
+			<label for="label">Close</label>
 			<br>
 			<br>
         <button type="submit">Submit</button>
     </form>
+	
+	<hr>
+	<h2>PIR Sensor</h2>
     <form action={{ url_for('setColor') }} methods="post">
 		<label for="rVal">R</label>
 		<input type="text" id="rVal" name="rVal">
@@ -33,6 +38,7 @@
 		<label for="bVal">B</label>
 		<input type="text" id="bVal" name="bVal">
 		<div/>
+		<br>
 		<input type="submit">
 	</form>
 	<p>
@@ -43,3 +49,4 @@
 	</h3>
 </body>
 </html>
+
