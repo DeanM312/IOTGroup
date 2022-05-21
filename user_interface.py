@@ -17,6 +17,11 @@ deanHost = 'localhost'
 alexHost = '192.168.43.118'
 jaredHost = '192.168.43.5'
 
+fanOveride = '0'
+
+temp = 0
+doorstate = 0
+
 #db = DBComs(
 #    host=deanHost,
 #    user='pi',
@@ -32,25 +37,49 @@ db = pymysql.connect(
     cursorclass=pymysql.cursors.DictCursor
 ) or die('failed')
 
-def on_message(client, userdata, message):
-    global data
-    data = str(message.payload.decode("utf-8"))
-    print(message.payload.decode())
+def on_message_temperature(client, userdata, message):
+    global fanOveride
+    global temp
+    
+    
+    temp = float(message.payload.decode("utf-8"))
+
+    print(temp)
+    
+    #mqttDean.publish("topic/fanstate","0")
+    if ((doorstate == 'OPEN' and temp > 21) or temp > 25) and fanOveride == '0':
+        mqttDean.publish("topic/fanstate","ON")
+    elif fanOveride == '1':
+        mqttDean.publish("topic/fanstate","ON")
+    else:
+        mqttDean.publish("topic/fanstate","OFF")
+    
+    temp = str(message.payload.decode("utf-8"))
+    
     colData = [time.time(), data]
     cols = ['_time', 'temperature']
     command = 'INSERT INTO templog (_time, temperature) VALUES ({}, {})'.format(colData[0], colData[1])
     c = db.cursor()
     c.execute(command)
     db.commit()
+    
+def on_message_distance(client, userdata, message):
+    # Door automation goes here
+    pass
+    
+    
+    
+def on_message_pir(client, userdata, message):
+    # Light automation goes here
+    pass
 
 # Dean's Node
-webserver = mqtt.Client("P1") 
-webserver.on_message=on_message
-webserver.connect(deanHost)
-webserver.subscribe('topic/fanstate', 0)
-#webserver.loop_start() 
-ws1 = threading.Thread(target=webserver.loop_forever)
-ws1.start()
+mqttDean = mqtt.Client() 
+mqttDean.on_message= on_message_temperature
+mqttDean.connect(deanHost)
+mqttDean.subscribe('topic/temperature', 0)
+mqttDean.loop_start() 
+
 
 # Alex's Node
 #mqttAlex = mqtt.Client()
@@ -89,22 +118,27 @@ def home():
 
 @app.route('/fanPub', methods=('GET', 'POST'))
 def fanPub():
-    
+    global fanOveride
     if request.method == 'POST':
         fanvalue = request.form['fanstate']
         doorvalue = request.form['door']
-        print(doorvalue)
+        
         
         if fanvalue == "ON":
-            webserver.publish("topic/fanstate","1")
-        else:
-            webserver.publish("topic/fanstate","0")
+            fanOveride = '1'
+            mqttDean.publish("topic/fanstate","ON")
+        elif fanvalue == "OFF":
+            fanOveride = '0'
+            mqttDean.publish("topic/fanstate","OFF")
             
         
+            
+        """
         if doorvalue == "ON":
             mqttJared.publish("topic/doorState","close")
         else:
             mqttJared.publish("topic/doorState","open")
+        """
             
         
             
@@ -155,7 +189,8 @@ def checkInt(string):
     return ret
 
 if __name__ == '__main__':
-	app.run(debug=True, host='0.0.0.0', port=8080)
-	
-	print("Web server closed")
-
+    
+    ws2 = threading.Thread(target= lambda: app.run(debug=False, host='0.0.0.0', port=8080,use_reloader=False))
+    ws2.start()
+    
+    
