@@ -31,12 +31,6 @@ mqttAlex = None
 
 realTemp = 0
 tempAPI = TempAPI()
-#db = DBComs(
-#    host=deanHost,
-#    user='pi',
-#    pwd='',
-#    dbName='smarthome'
-#)
 
 db = pymysql.connect(
     host='127.0.0.1',
@@ -240,7 +234,6 @@ def fanPub():
             
         
             
-        
         if doorvalue == "close":
             mqttJared.publish("edge/doorState","close")
         elif doorvalue == "open":

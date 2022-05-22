@@ -11,7 +11,6 @@ ser.flushOutput()
 
 HOST = 'localhost'
 
-
 #THINGSBOARD_HOST = '10.1.44.147'
 THINGSBOARD_HOST = '192.168.43.194'
 #THINGSBOARD_HOST = '192.168.0.45'
