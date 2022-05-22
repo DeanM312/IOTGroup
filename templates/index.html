@@ -7,6 +7,9 @@
 <body>
     <h1>Smart Home Controller</h1>
     <hr>
+    <h2> 
+	    Outside Temperature: {{ data['apiTemp'] }}
+    </h2>
     <h2>Commands</h2>
     
     <form action={{ url_for('fanPub') }} method="post">
@@ -18,11 +21,16 @@
 			<br>
 			<label for="door">Door:</label>
 			<input type="radio" id="open" name="door" value="open">
+			<label for="open">Open</label>
 			<input type="radio" id="close" name="door" value="close">
+			<label for="label">Close</label>
 			<br>
 			<br>
         <button type="submit">Submit</button>
     </form>
+	
+	<hr>
+	<h2>PIR Sensor</h2>
     <form action={{ url_for('setColor') }} methods="post">
 		<label for="rVal">R</label>
 		<input type="text" id="rVal" name="rVal">
@@ -33,6 +41,7 @@
 		<label for="bVal">B</label>
 		<input type="text" id="bVal" name="bVal">
 		<div/>
+		<br>
 		<input type="submit">
 	</form>
 	<p>
@@ -41,5 +50,11 @@
 			Turn On
 		</a>
 	</h3>
+	<h3>
+		<a href='/mlTemp'>
+			Predict Temperature
+		</a>
+	</h3>
+	<img src='static/fig.png'></img>
 </body>
 </html>
